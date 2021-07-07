@@ -195,3 +195,16 @@ provider = {{ grafana_image_storage.provider }}
 {{ k }} = {{ v }}
 {%   endfor %}
 {% endif %}
+
+{% if grafana_additional_sections != {} %}
+# Additional sections
+{%   for k,v in grafana_additional_sections.items() %}
+{%     if v != {} %}
+[{{ k }}]
+{%       for k1,v1 in v.items() %}
+{{ k1 }} = {{ v1 }}
+{%       endfor %}
+{%     endif %}
+
+{%   endfor %}
+{% endif %}
