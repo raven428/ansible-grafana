@@ -1,17 +1,20 @@
 ---
 - name: Check which plugins are installed
-  find:
-    file_type: directory
-    recurse: false
-    paths: "{{ grafana_data_dir }}/plugins"
+  shell: >-
+    grafana-cli plugins ls |
+    sed 's/\@ //' |
+    egrep -v '(installed plugins)|(Please restart)' |
+    awk /./
   register: installed_plugins
+  changed_when: false
+  check_mode: false
 
 - name: Install plugins
   become: true
-  command: "grafana-cli --pluginsDir {{ grafana_data_dir }}/plugins plugins install {{ item }}"
+  shell: "umask 0022 && grafana-cli --pluginsDir {{ grafana_data_dir }}/plugins plugins install {{ item }}"
   args:
     creates: "{{ grafana_data_dir }}/plugins/{{ item }}"
-  with_items: "{{ grafana_plugins | difference(installed_plugins.files) }}"
+  with_items: "{{ grafana_plugins | difference(installed_plugins.stdout_lines) }}"
   register: _plugin_install
   until: _plugin_install is succeeded
   retries: 5

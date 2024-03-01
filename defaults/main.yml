@@ -192,9 +192,9 @@ grafana_image_storage: {}
 
 
 #######
-# Plugins from https://grafana.com/plugins
+# Plugins with versions from https://grafana.com/plugins
 grafana_plugins: []
-#  - raintank-worldping-app
+#  - raintank-worldping-app 0.23.14
 
 # Dashboards from https://grafana.com/dashboards
 grafana_dashboards: []
