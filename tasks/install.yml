@@ -71,7 +71,7 @@
     - grafana_manage_repo
   environment: "{{ grafana_environment }}"
 
-- name: Install Grafana
+- name: Install Grafana from repository if no file set
   package:
     name: "{{ grafana_package }}"
     state: "{{ (grafana_version == 'latest') | ternary('latest', 'present') }}"
@@ -80,3 +80,9 @@
   retries: 5
   delay: 2
   notify: restart grafana
+  when: grafana_package_file | default('') | length <= 0
+
+- name: Download and install exact grafana package
+  apt:
+    deb: "{{ grafana_package_file }}"
+  when: grafana_package_file | default('') | length > 0
